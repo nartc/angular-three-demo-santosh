@@ -1,40 +1,68 @@
-import { Component } from '@angular/core';
+import { NgIf } from '@angular/common';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, Input, ViewChild } from '@angular/core';
+import { extend, NgtArgs, NgtCanvas } from 'angular-three';
+import * as THREE from 'three';
+import { Mesh } from 'three';
+
+extend(THREE);
+
+@Component({
+    selector: 'app-box',
+    standalone: true,
+    template: `
+        <ngt-mesh #mesh (beforeRender)="onBeforeRender($any(mesh))" [position]="position">
+            <ngt-box-geometry />
+            <ngt-mesh-standard-material />
+        </ngt-mesh>
+
+        <ng-container *ngIf="showHelper">
+            <ngt-box-helper #boxHelper *args="[mesh, 'darkred']" />
+        </ng-container>
+    `,
+    imports: [NgtArgs, NgIf],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+})
+export class Box {
+    @Input() showHelper = false;
+    @Input() position = [0, 0, 0];
+
+    @ViewChild('boxHelper') boxHelper?: ElementRef<THREE.BoxHelper>;
+
+    onBeforeRender(mesh: Mesh) {
+        mesh.rotation.x += 0.01;
+        mesh.rotation.y += 0.01;
+
+        if (this.boxHelper) {
+            this.boxHelper.nativeElement.update();
+        }
+    }
+}
+
+@Component({
+    standalone: true,
+    template: `
+        <ngt-spot-light #spotLight [position]="2" />
+        <ngt-spot-light-helper *args="[spotLight, 'red']" />
+
+        <ngt-point-light #pointLight [position]="-2" />
+        <ngt-point-light-helper *args="[pointLight, 2, 'blue']" />
+
+        <app-box [position]="[-1.5, 0, 0]" />
+        <app-box [showHelper]="true" [position]="[1.5, 0, 0]" />
+    `,
+    imports: [NgtArgs, Box],
+    schemas: [CUSTOM_ELEMENTS_SCHEMA],
+})
+export class Scene {}
 
 @Component({
     selector: 'app-root',
     standalone: true,
     template: `
-        <!--The content below is only a placeholder and can be replaced.-->
-        <div style="text-align:center" class="content">
-            <h1>Welcome to {{ title }}!</h1>
-            <span style="display: block">{{ title }} app is running!</span>
-            <img
-                width="300"
-                alt="Angular Logo"
-                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg=="
-            />
-        </div>
-        <h2>Here are some links to help you start:</h2>
-        <ul>
-            <li>
-                <h2>
-                    <a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a>
-                </h2>
-            </li>
-            <li>
-                <h2>
-                    <a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a>
-                </h2>
-            </li>
-            <li>
-                <h2>
-                    <a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a>
-                </h2>
-            </li>
-        </ul>
+        <ngt-canvas [sceneGraph]="scene" [camera]="{ position: [-5, 5, 5] }" />
     `,
-    styles: [],
+    imports: [NgtCanvas],
 })
 export class AppComponent {
-    title = 'ng-three-demo';
+    readonly scene = Scene;
 }
