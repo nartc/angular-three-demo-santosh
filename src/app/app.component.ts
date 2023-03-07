@@ -1,6 +1,7 @@
 import { NgIf } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, Input, ViewChild } from '@angular/core';
 import { extend, NgtArgs, NgtCanvas } from 'angular-three';
+import { NgtsOrbitControls } from 'angular-three-soba/controls';
 import * as THREE from 'three';
 import { Mesh } from 'three';
 
@@ -41,16 +42,18 @@ export class Box {
 @Component({
     standalone: true,
     template: `
-        <ngt-spot-light #spotLight [position]="2" />
+        <ngt-spot-light #spotLight [position]="5" />
         <ngt-spot-light-helper *args="[spotLight, 'red']" />
 
-        <ngt-point-light #pointLight [position]="-2" />
+        <ngt-point-light #pointLight [position]="-5" />
         <ngt-point-light-helper *args="[pointLight, 2, 'blue']" />
 
         <app-box [position]="[-1.5, 0, 0]" />
         <app-box [showHelper]="true" [position]="[1.5, 0, 0]" />
+
+        <ngts-orbit-controls />
     `,
-    imports: [NgtArgs, Box],
+    imports: [NgtArgs, Box, NgtsOrbitControls],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class Scene {}
