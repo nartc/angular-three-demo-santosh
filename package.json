@@ -22,6 +22,7 @@
         "angular-three-soba": "1.11.1",
         "rxjs": "~7.8.0",
         "three": "^0.149.0",
+        "three-mesh-bvh": "^0.5.23",
         "three-stdlib": "^2.0.0",
         "troika-three-text": "^0.47.1",
         "tslib": "^2.3.0",

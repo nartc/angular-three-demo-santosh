@@ -11,29 +11,7 @@ extend({ Mesh, Fog, PlaneGeometry, ShadowMaterial, PointLight, Vector2, Color })
 
 @Component({
     standalone: true,
-    template: `
-        <ngt-fog *args="['#cccccc', 10, 15]" attach="fog" />
-        <ngt-color *args="['#95CFFF']" attach="background" />
-
-        <ngt-point-light [position]="[5, 15, 15]" [castShadow]="true" [intensity]="0.5">
-            <ngt-vector2 *args="[1024, 1024]" attach="shadow.mapSize" />
-        </ngt-point-light>
-
-        <ngt-mesh [receiveShadow]="true" [rotation]="[-Math.PI / 2, 0, 0]">
-            <ngt-plane-geometry *args="[100, 100]" />
-            <ngt-shadow-material [transparent]="true" />
-        </ngt-mesh>
-
-        <ngt-primitive
-            *args="model$ | ngtPush"
-            [scale]="0.01"
-            [position]="[0, 0.41, 0]"
-            [rotation]="[0, -Math.PI / 2, 0]"
-        />
-
-        <ngts-environment preset="sunset" />
-        <ngts-orbit-controls [autoRotate]="true" [autoRotateSpeed]="0.5" />
-    `,
+    templateUrl: './scene.html',
     imports: [NgtArgs, NgtPush, NgtsOrbitControls, NgtsEnvironment, NgtsFloat],
     schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
@@ -69,12 +47,9 @@ export class Scene {
 @Component({
     selector: 'app-root',
     standalone: true,
-    template: `
-        <ngt-canvas [sceneGraph]="scene" [camera]="{ position: [-5, 5, 5] }" [shadows]="true" />
-    `,
+    templateUrl: './app.html',
     imports: [NgtCanvas, NgtArgs],
-    styles: [],
 })
-export class AppComponent {
+export class App {
     readonly scene = Scene;
 }
